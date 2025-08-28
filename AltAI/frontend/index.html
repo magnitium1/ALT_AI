@@ -102,9 +102,9 @@
     <h1>🤖 AltAI - Тестирование API</h1>
     
     <div class="tabs">
-        <button class="tab active" onclick="showTab('register')">Регистрация</button>
-        <button class="tab" onclick="showTab('login')">Вход</button>
-        <button class="tab" onclick="showTab('model')">AI Модель</button>
+        <button class="tab active" onclick="showTab('register', event)">Регистрация</button>
+        <button class="tab" onclick="showTab('login', event)">Вход</button>
+        <button class="tab" onclick="showTab('model', event)">AI Модель</button>
     </div>
 
     <!-- Регистрация -->
@@ -157,7 +157,7 @@
     <script>
         let currentToken = null;
 
-        function showTab(tabName) {
+        function showTab(tabName, evt) {
             // Скрываем все табы
             const tabs = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => tab.classList.remove('active'));
@@ -170,7 +170,7 @@
             document.getElementById(tabName).classList.add('active');
             
             // Делаем кнопку активной
-            event.target.classList.add('active');
+            (evt?.target || window.event?.target)?.classList.add('active');
         }
 
         async function register() {
@@ -183,7 +183,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost:8070/register', {
+                const response = await fetch('http://127.0.0.1:8070/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -215,7 +215,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost:8070/login', {
+                const response = await fetch('http://127.0.0.1:8070/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -252,7 +252,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost:8070/request_to_model', {
+                const response = await fetch('http://127.0.0.1:8070/request_to_model', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -264,7 +264,7 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    showResponse('model-response', `Ответ AI модели:\n\n${data}`, 'success');
+                    showResponse('model-response', `Ответ AI модели:\n\n${data?.answer ?? 'Нет ответа'}`, 'success');
                 } else {
                     showResponse('model-response', `Ошибка: ${data.error}`, 'error');
                 }

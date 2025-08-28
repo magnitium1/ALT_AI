@@ -10,7 +10,15 @@ import sqlite3
 
 
 app = Flask(__name__)
-CORS(app)
+# Разрешаем CORS с заголовком Authorization и методом OPTIONS
+CORS(
+    app,
+    resources={r"/*": {"origins": "*"}},
+    supports_credentials=False,
+    allow_headers=["Content-Type", "Authorization"],
+    expose_headers=["Authorization"],
+    methods=["GET", "POST", "OPTIONS"],
+)
 
 JWT_SECRET = os.environ.get("JWT_SECRET", "change-me-in-prod")
 DB_PATH = os.path.join(os.path.dirname(__file__), "users.db")
@@ -113,6 +121,9 @@ def login():
 
 @app.route("/request_to_model", methods=["POST", "OPTIONS"])
 def request_to_model():
+    # Корректно отвечаем на preflight
+    if request.method == "OPTIONS":
+        return "", 204
     try:
         data = request.get_json(silent=True) or {}
         user_text = data.get("request", "")

@@ -194,16 +194,34 @@ const App2 = () => {
             behavior: 'smooth'
         });
         
+        const token = localStorage.getItem('jwt_token') || '';
+        if (!token) {
+            if (load && load.parentNode) {
+                load.remove();
+            }
+            const warn = document.createElement('div');
+            warn.className = 'answer error';
+            warn.textContent = 'Вы не авторизованы. Войдите через LOGIN (получите токен) и попробуйте снова.';
+            content.appendChild(warn);
+            content.scrollTo({ top: content.scrollHeight, behavior: 'smooth' });
+            setIsBusy(false);
+            console.error('JWT token is missing. Please log in.');
+            return;
+        }
+
         axios
-            .post('http://localhost:8070/request_to_model', {
-                request: cnt
-            })
+            .post(
+                'http://127.0.0.1:8070/request_to_model',
+                { request: cnt },
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
             .then((response) => {
                 const answer = document.createElement("p");
                 answer.className = "answer";
                 content.appendChild(answer);
 
-                typeWriter(answer, response.data[0], 80, () => {
+                const text = (response && response.data && response.data.answer) ? response.data.answer : 'Нет ответа от сервера';
+                typeWriter(answer, text, 80, () => {
                     const actions = document.createElement('div');
                     actions.className = 'answer-actions';
 
@@ -244,6 +262,13 @@ const App2 = () => {
                 if (load && load.parentNode) {
                     load.remove();
                 }
+                const err = document.createElement('div');
+                err.className = 'answer error';
+                const status = error?.response?.status;
+                const msg = error?.response?.data?.error || error?.message || 'Неизвестная ошибка';
+                err.textContent = `Ошибка запроса${status ? ` (${status})` : ''}: ${msg}`;
+                content.appendChild(err);
+                content.scrollTo({ top: content.scrollHeight, behavior: 'smooth' });
                 setIsBusy(false);
             });
     }

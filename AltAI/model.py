@@ -1,28 +1,27 @@
-from huggingface_hub import InferenceClient
-import os
+from qwen_api import Qwen
+from qwen_api.core.types.chat import ChatMessage
+from dotenv import load_dotenv
+load_dotenv()
 
 
 def use_model(user_promt: str) -> str:
-    api_key = os.environ.get("HF_API_KEY")
-    if not api_key:
-        raise ValueError("HF_API_KEY is not set in environment")
+    client = Qwen()
 
-    client = InferenceClient(
-        provider="novita",
-        api_key=api_key,
+
+    messages = [ChatMessage(
+        role="user",
+        content=user_promt,
+        web_search=False,
+        thinking=False
+    )]
+
+
+    response = client.chat.create(
+        messages=messages,
+        model="qwen-max-latest"
     )
 
-    completion = client.chat.completions.create(
-        model="Qwen/Qwen3-235B-A22B-Thinking-2507",
-        messages=[
-            {
-                "role": "user",
-                "content": user_promt,
-            }
-        ],
-    )
-
-    return completion.choices[0].message.content
+    return response.choices.message.content
 
 
 if __name__ == "__main__":
