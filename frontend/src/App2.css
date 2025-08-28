@@ -1,0 +1,379 @@
+.right-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.logo2 {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.alt {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.logo_img {
+    width: 80px;
+    height: 80px;
+}
+
+.accaunt {
+    background: transparent;
+    position: absolute;
+    top: 2%;
+    right: 1.5%;
+    user-select: none;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.text-area {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	border-radius: 20px;
+	border: none;
+	outline: none;
+	width: 100%;
+	height: 80%;
+	font-size: 16px;
+	padding-left: 10px;
+	padding-right: 50px;
+	padding-top: 5px;
+	background-color: #1a1a1a;
+	color: #999999;
+	user-select: none;
+	box-sizing: border-box;
+	resize: none;
+	bottom: 55px;
+}
+
+.textarea-wrapper {
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    top: 50%;
+    background-color: #1a1a1a;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+    width: 50%;
+    height: 16%;
+    z-index: 2;
+    transition: 1.5s;
+}
+
+.inside-button {
+    user-select: none;
+    position: absolute;
+    background: transparent;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    font-size: 24px;
+    cursor: pointer;
+    bottom: 10px;
+    right: 10px;
+}
+
+.inside-button:disabled {
+    border-color: #999999;
+    color: #999999;
+    cursor: not-allowed;
+}
+
+.deep_think {
+    user-select: none;
+    position: absolute;
+    background: transparent;
+    border: 1px solid #999999;
+    color: #999999;
+    border-radius: 15px;
+    width: auto;
+    padding: 8px 15px;
+    font-size: 16px;
+    height: 35px;
+    cursor: pointer;
+    bottom: 10px;
+    left: 10px;
+    --deep-think-width: auto;
+}
+
+.deeper_think {
+    user-select: none;
+    position: absolute;
+    background: transparent;
+    border: 1px solid #999999;
+    color: #999999;
+    border-radius: 15px;
+    width: auto;
+    padding: 8px 15px;
+    font-size: 16px;
+    height: 35px;
+    cursor: pointer;
+    bottom: 10px;
+    left: calc(40px + 9ch + 10px);
+}
+
+.bottom {
+    position: absolute;
+    top: 90%;
+}
+
+.new_design {
+    background-color: white;
+    border: 1px solid white;
+    color: black;
+}
+
+.question {
+    align-self: flex-end;
+    max-width: 50%;
+    margin-top: 10px;
+    background-color: #1a1a1a;
+    padding: 10px;
+    border-radius: 10px;
+    color: #999999;
+    overflow-wrap: anywhere;
+    font-size: 16px;
+}
+
+.answer {
+    align-self: flex-start;
+    max-width: 70%;
+    color: #999999;
+    font-size: 16px;
+    overflow-wrap: anywhere;
+}
+
+.answer-actions {
+    align-self: flex-start;
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+}
+
+.action-button {
+    background: transparent;
+    border: 1px solid #999999;
+    color: #999999;
+    border-radius: 10px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.action-button:hover {
+    border-color: #b3b3b3;
+    color: #b3b3b3;
+}
+
+.edit-button {
+    border-color: #999999;
+    color: #999999;
+}
+
+.copy-button {
+    border-color: #999999;
+    color: #999999;
+}
+
+.load {
+    align-self: flex-start;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    border: 3px dashed #999999;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    user-select: none;
+    font-size: 16px;
+    animation: rotate 2s infinite linear;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.content {
+    position: absolute;
+    left: 50%;
+    top: 7%;
+    width: 50%;
+    height: 65%;
+    transform: translate(-50%, 0%);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: none;
+    scroll-behavior: smooth;
+}
+
+.text-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.text-area::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 10px;
+    width: 90%;
+}
+
+.text-area::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 20px;
+}
+
+.content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.content::-webkit-scrollbar-track {
+    background: black;
+    border-radius: 10px;
+    width: 90%;
+}
+
+.content::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 20px;
+}
+
+@media (max-width: 768px) {
+    .logo2 {
+        left: 5px;
+        top: 5px;
+    }
+    
+    .logo_img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .alt {
+        font-size: 18px;
+    }
+    
+    .accaunt {
+        right: 10px;
+        top: 3%;
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+    
+    .textarea-wrapper {
+        width: min(95%, 500px);
+        height: min(18%, 130px);
+    }
+    
+    .content {
+        width: min(95%, 500px);
+        top: 10%;
+        height: 60%;
+    }
+    
+    .deep_think, .deeper_think {
+        font-size: 13px;
+        padding: 5px 10px;
+        height: 28px;
+        bottom: 10px;
+    }
+    .deep_think { left: 10px; }
+    .deeper_think { left: calc(10px + 9ch + 24px); }
+}
+
+@media (max-width: 480px) {
+    .logo2 {
+        left: 2px;
+        top: 2px;
+    }
+    
+    .logo_img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .alt {
+        font-size: 16px;
+    }
+    
+    .accaunt {
+        right: 5px;
+        top: 10px;
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+    
+    .textarea-wrapper {
+        width: min(98%, 350px);
+        height: min(20%, 140px);
+        top: 45%;
+    }
+    
+    .content {
+        width: min(98%, 350px);
+        top: 15%;
+        height: 50%;
+    }
+    
+    .text-area {
+        font-size: 14px;
+        padding-left: 8px;
+        padding-right: 45px;
+    }
+    
+    .deep_think, .deeper_think {
+        font-size: 12px;
+        padding: 4px 9px;
+        height: 26px;
+        bottom: 8px;
+    }
+    .deep_think { left: 10px; }
+    .deeper_think { left: calc(10px + 8ch + 22px); }
+    
+    .inside-button {
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+        bottom: 8px;
+        right: 8px;
+    }
+    
+    .question, .answer {
+        font-size: 14px;
+    }
+    
+    .question {
+        max-width: 70%;
+    }
+    
+    .answer {
+        max-width: 85%;
+    }
+}
+

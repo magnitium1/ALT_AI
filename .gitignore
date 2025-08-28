@@ -1,0 +1,14 @@
+﻿frontend/node_modules/
+frontend/.vite/
+frontend/.eslintcache
+AltAI/venv/
+**/__pycache__/
+*.pyc
+AltAI/users.db
+.env
+.env.*
+*.env
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

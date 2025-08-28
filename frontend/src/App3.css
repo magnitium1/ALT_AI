@@ -1,0 +1,535 @@
+.app3 {
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: 'Roboto', sans-serif;
+    position: relative;
+}
+
+.logo2 {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.alt {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.logo_img {
+    width: 80px;
+    height: 80px;
+}
+
+.accaunt {
+    background: transparent;
+    position: absolute;
+    top: 3%;
+    right: 1.5%;
+    user-select: none;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.chats-history {
+    position: absolute;
+    top: 13%;
+    left: 15px;
+    bottom: 20px;
+    width: 25%;
+    background-color: #1a1a1a;
+    border-radius: 15px;
+}
+
+.chats-history-title {
+    color: white;
+    position: absolute;
+    font-size: 24px;
+    user-select: none;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+.chat-search {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 30px);
+    max-width: 85%;
+    height: 36px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    padding: 0 12px;
+    background-color: #2a2a2a;
+    color: #ffffff;
+}
+
+
+.statistics {
+    position: absolute;
+    top: 13%;
+    right: 15px;
+    float: right;
+    width: 71.5%;
+    bottom: 20px;
+    border-radius: 15px;
+    background-color: #1a1a1a;
+    padding-bottom: 64px;
+}
+
+.information {
+    color: white;
+    position: absolute;
+    font-size: 24px;
+    user-select: none;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+.content2 {
+    position: relative;
+    width: calc(100% - 30px);
+    margin: 0 15px;
+    top: 100px;
+}
+
+.nickname-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.NickName {
+    color: #999999;
+    font-size: 20px;
+    user-select: none;
+    margin: 0;
+    text-align: left;
+}
+
+.nick {
+    color: #999999;
+    font-size: 20px;
+    background-color: #2a2a2a;
+    padding: 3px 8px;
+    border-radius: 10px;
+    user-select: none;
+    margin: 0;
+    text-align: left;
+}
+
+.email-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.EmailLabel {
+    color: #999999;
+    font-size: 20px;
+    user-select: none;
+    margin: 0;
+    text-align: left;
+}
+
+.email {
+    color: #999999;
+    font-size: 20px;
+    background-color: #2a2a2a;
+    padding: 3px 8px;
+    border-radius: 10px;
+    user-select: none;
+    margin: 0;
+    text-align: left;
+}
+
+.subscription-block {
+    position: relative;
+    float: none;
+    margin-right: 15px;
+    margin-top: 15px;
+    width: calc(100% - (15px + 20ch) - 15px);
+}
+
+.subscription-button {
+    display: inline-block;
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 15px;
+    padding: 12px 16px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.subscription-button:hover {
+    filter: brightness(0.95);
+}
+
+.logout-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    transition: background-color 0.3s ease;
+
+    user-select: none;
+}
+
+.logout-button:hover {
+    background-color: #c82333;
+}
+
+.edit-link {
+    position: absolute;
+    bottom: 22px;
+    right: 20px;
+    color: #999999;
+    text-decoration: none;
+    font-size: 20px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.edit-link:hover {
+    text-decoration: underline;
+}
+
+.logout-button:active {
+    background-color: #bd2130;
+    transform: translateY(1px);
+}
+
+@media screen and (max-width: 1024px) {
+    .logo2 {
+        left: 2px;
+        top: 2px;
+    }
+    
+    .alt {
+        font-size: 20px;
+    }
+    
+    .logo_img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .accaunt {
+        top: 2%;
+        right: 1%;
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+    
+    .chats-history {
+        top: 12%;
+        left: 10px;
+        width: 30%;
+        bottom: 15px;
+    }
+    
+    .chats-history-title {
+        font-size: 20px;
+    }
+    
+    .statistics {
+        top: 12%;
+        right: 10px;
+        width: 66%;
+        bottom: 15px;
+    }
+    
+    .information {
+        font-size: 20px;
+    }
+    
+    .content2 {
+        top: 40px;
+    }
+    
+    .nickname-container {
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+    
+    .NickName {
+        font-size: 20px;
+    }
+    
+    .nick {
+        font-size: 20px;
+        padding: 2px 6px;
+    }
+    
+    .email-container {
+        gap: 12px;
+    }
+    
+    .EmailLabel {
+        font-size: 20px;
+    }
+    
+    .email {
+        font-size: 20px;
+        padding: 2px 6px;
+    }
+    
+    .logout-button {
+        font-size: 16px;
+        padding: 8px 16px;
+        bottom: 12px;
+        left: 10px;
+    }
+    .subscription-block {
+        margin-left: calc(10px + 18ch);
+        width: calc(100% - (10px + 18ch) - 10px);
+    }
+}
+
+
+@media screen and (max-width: 768px) {
+    .app3 {
+        flex-direction: column;
+    }
+    
+    .logo2 {
+        position: relative;
+        left: auto;
+        top: auto;
+        text-align: center;
+        padding: 10px 0;
+    }
+    
+    .alt {
+        font-size: 18px;
+        justify-content: center;
+    }
+    
+    .logo_img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .accaunt {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin: 10px auto;
+        display: block;
+        width: fit-content;
+        padding: 8px 20px;
+        font-size: 14px;
+    }
+    
+    .chats-history {
+        position: relative;
+        top: auto;
+        left: auto;
+        bottom: auto;
+        width: calc(100% - 20px);
+        margin: 10px;
+        min-height: 200px;
+        height: auto;
+    }
+    
+    .chats-history-title {
+        font-size: 18px;
+        position: relative;
+        left: auto;
+        transform: none;
+        text-align: center;
+        padding: 15px 0;
+        margin: 0;
+    }
+    
+    .statistics {
+        position: relative;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        width: calc(100% - 20px);
+        margin: 10px;
+        min-height: 300px;
+        height: auto;
+        float: none;
+    }
+    
+    .information {
+        font-size: 18px;
+        position: relative;
+        left: auto;
+        transform: none;
+        text-align: center;
+        padding: 15px 0;
+        margin: 0;
+    }
+    
+    .content2 {
+        top: 30px;
+        margin: 0 10px;
+        width: calc(100% - 20px);
+    }
+    
+    .nickname-container {
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .NickName {
+        font-size: 18px;
+    }
+    
+    .nick {
+        font-size: 18px;
+        padding: 2px 5px;
+    }
+    
+    .email-container {
+        gap: 10px;
+    }
+    
+    .EmailLabel {
+        font-size: 18px;
+    }
+    
+    .email {
+        font-size: 18px;
+        padding: 2px 5px;
+    }
+    
+    .logout-button {
+        font-size: 16px;
+        padding: 8px 16px;
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        transform: none;
+        margin: 0;
+        display: inline-block;
+    }
+    .subscription-block {
+        margin-left: 10px;
+        margin-right: 10px;
+        width: calc(100% - 20px);
+    }
+}
+
+
+@media screen and (max-width: 480px) {
+    .app3 {
+        padding: 0 5px;
+    }
+    
+    .alt {
+        font-size: 16px;
+        gap: 1px;
+    }
+    
+    .logo_img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .accaunt {
+        padding: 6px 15px;
+        font-size: 12px;
+    }
+    
+    .chats-history {
+        margin: 5px;
+        width: calc(100% - 10px);
+        min-height: 150px;
+    }
+    
+    .chats-history-title {
+        font-size: 16px;
+        padding: 10px 0;
+    }
+    
+    .statistics {
+        margin: 5px;
+        width: calc(100% - 10px);
+        min-height: 250px;
+    }
+    
+    .information {
+        font-size: 16px;
+        padding: 10px 0;
+    }
+    
+    .content2 {
+        top: 25px;
+        margin: 0 5px;
+        width: calc(100% - 10px);
+    }
+    
+    .nickname-container {
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+    }
+    
+    .NickName {
+        font-size: 16px;
+    }
+    
+    .nick {
+        font-size: 16px;
+        padding: 2px 4px;
+    }
+    
+    .email-container {
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .EmailLabel {
+        font-size: 16px;
+    }
+    
+    .email {
+        font-size: 16px;
+        padding: 2px 4px;
+    }
+    
+    .logout-button {
+        font-size: 14px;
+        padding: 6px 12px;
+        bottom: 8px;
+        position: relative;
+        left: 5px;
+        transform: none;
+        margin: 12px 0 0;
+        display: inline-block;
+    }
+    .subscription-block {
+        margin-left: 5px;
+        margin-right: 5px;
+        width: calc(100% - 10px);
+    }
+}

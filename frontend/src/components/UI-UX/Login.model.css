@@ -1,0 +1,79 @@
+.Login {
+    position: absolute;
+    right: 1%;
+    width: 20%;
+    top: 50%;
+    transform: translate(0%, -50%);
+    height: 55%;
+    background-color: #1A1A1A;
+    border-radius: 20px;
+    user-select: none;
+    z-index: 10;
+}
+
+.display_none {
+    display: none;
+}
+
+.btn-enter1 {
+    position: absolute;
+    left: 5%;
+    width: 90%;
+    border-radius: 20px;
+    background-color: black;
+    color: white;
+    height: 50px;
+    border: none;
+    font-size: 25px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.input {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    width: 90%;
+    height: 45px;
+    border-radius: 20px;
+    background-color: #1A1A1A;
+    color: #999999;
+    font-size: 16px;
+    border: 3px solid black;
+}
+
+.ac {
+    position: absolute;
+    top: 70%;
+    font-size: 16px;
+    color: white;
+    left: 5%;
+}
+
+.link1 {
+    cursor: pointer;
+}
+
+.class1 {
+    top: 45%;
+}
+
+.class2 {
+    top: 60%;
+}
+
+.class3 {
+    top: 30%;
+}
+
+.text-content {
+    color: white;
+}
+
+.one {
+    top: 83%;
+}
+
+.two {
+    top: 5%;
+}

@@ -1,0 +1,356 @@
+body {
+    background-color: #000000;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: 'Roboto', sans-serif;
+}
+
+.background-text {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 13vw;
+    background-color: #000000;
+    color: #999999;
+    opacity: 0.2;
+    z-index: 100;
+
+    user-select: none;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 2px;
+    box-sizing: border-box;
+    position: relative;
+    min-height: 80px;
+}
+
+.logo {
+    display: flex;
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    align-items: center;
+}
+
+.alt {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.logo_img {
+    width: 80px;
+    height: 80px;
+}
+
+nav {
+    align-items: center;
+    display: flex;
+    position: absolute;
+    top: 30px;
+    gap: 20px;
+}
+
+nav a {
+    color: #CCCCCC;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+nav a:hover {
+    color: #FFFFFF;
+}
+
+.login, .build-api {
+    background: transparent;
+    border: 1px solid #FFFFFF;
+    color: #FFFFFF;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.main-btn {
+    background: transparent;
+    border: 1px solid #FFFFFF;
+    color: #FFFFFF;
+    border-radius: 25px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.mw-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    display: block;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.subscription-panel {
+    position: fixed;
+    right: 15px;
+    bottom: 20px;
+    width: 360px;
+    height: 240px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.subscription-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 3px;
+    border-radius: 16px;
+    background: #ffffff;
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+}
+
+.subscription-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 3px;
+    border-radius: 16px;
+    background: conic-gradient(from 0deg, rgba(255,255,255,0.5), rgba(255,255,255,1), rgba(255,255,255,0.5));
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    filter: blur(8px);
+    pointer-events: none;
+}
+
+.subscription-panel .bg {
+    position: absolute;
+    inset: 0;
+    background: url('./components/IMG/subscription.jpg') center/cover no-repeat;
+    filter: saturate(110%);
+}
+
+.subscription-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 46px;
+    padding: 0 20px;
+    border-radius: 20px;
+    background: #ffffff;
+    color: #000000;
+    font-weight: 700;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .subscription-panel {
+        width: 320px;
+        height: 210px;
+        right: 10px;
+        bottom: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .subscription-panel {
+        width: calc(100% - 10px);
+        right: 5px;
+        left: 5px;
+        height: 200px;
+        bottom: 10px;
+    }
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    left: 50%;
+    top: 60%;
+    transform: translate(-50%, -50%);
+    background-color: #1A1A1A;
+    border-radius: 25px;
+    padding: 10px;
+    width: min(90%, 500px);
+    max-width: 500px;
+}
+
+.display_none {
+    display: none;
+}
+
+.search-bar input {
+    background: transparent;
+    border: none;
+    color: #999999;
+    font-size: 16px;
+    flex-grow: 1;
+    outline: none;
+}
+
+.search-button {
+    background: transparent;
+    border: 1px solid #FFFFFF;
+    color: #FFFFFF;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    font-size: 24px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.tagline {
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 500;
+    max-width: 600px;
+    margin-top: 20px;
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+}
+
+.arrow {
+    color: #FFFFFF;
+    font-size: 20px;
+}
+
+.footer-right {
+    display: flex;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .logo {
+        left: 5px;
+        top: 5px;
+    }
+    
+    .logo_img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .alt {
+        font-size: 18px;
+    }
+    
+    nav {
+        display: none;
+    }
+    
+    .login {
+        right: 10px;
+        top: 15px;
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+    
+    .search-bar {
+        width: min(95%, 400px);
+        padding: 8px;
+    }
+    
+    .background-text {
+        font-size: 15vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        left: 2px;
+        top: 2px;
+    }
+    
+    .logo_img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .alt {
+        font-size: 16px;
+    }
+    
+    .login {
+        right: 5px;
+        top: 10px;
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+    
+    .search-bar {
+        width: min(98%, 350px);
+        padding: 6px;
+        top: 65%;
+    }
+    
+    .search-bar input {
+        font-size: 14px;
+    }
+    
+    .search-button {
+        width: 35px;
+        height: 35px;
+        font-size: 20px;
+    }
+    
+    .background-text {
+        font-size: 20vw;
+    }
+}

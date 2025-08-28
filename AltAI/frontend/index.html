@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AltAI - Тестирование API</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], input[type="password"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .response {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+            margin-top: 15px;
+            white-space: pre-wrap;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background-color: #e9ecef;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: #007bff;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>🤖 AltAI - Тестирование API</h1>
+    
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('register')">Регистрация</button>
+        <button class="tab" onclick="showTab('login')">Вход</button>
+        <button class="tab" onclick="showTab('model')">AI Модель</button>
+    </div>
+
+    <!-- Регистрация -->
+    <div id="register" class="tab-content active">
+        <div class="container">
+            <h2>Регистрация нового пользователя</h2>
+            <div class="form-group">
+                <label for="reg-username">Имя пользователя:</label>
+                <input type="text" id="reg-username" placeholder="Введите имя пользователя">
+            </div>
+            <div class="form-group">
+                <label for="reg-password">Пароль:</label>
+                <input type="password" id="reg-password" placeholder="Введите пароль">
+            </div>
+            <button onclick="register()">Зарегистрироваться</button>
+            <div id="register-response"></div>
+        </div>
+    </div>
+
+    <!-- Вход -->
+    <div id="login" class="tab-content">
+        <div class="container">
+            <h2>Вход в систему</h2>
+            <div class="form-group">
+                <label for="login-username">Имя пользователя:</label>
+                <input type="text" id="login-username" placeholder="Введите имя пользователя">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Пароль:</label>
+                <input type="password" id="login-password" placeholder="Введите пароль">
+            </div>
+            <button onclick="login()">Войти</button>
+            <div id="login-response"></div>
+        </div>
+    </div>
+
+    <!-- AI Модель -->
+    <div id="model" class="tab-content">
+        <div class="container">
+            <h2>Запрос к AI модели</h2>
+            <div class="form-group">
+                <label for="user-request">Ваш запрос:</label>
+                <textarea id="user-request" placeholder="Введите ваш вопрос или запрос к AI модели..."></textarea>
+            </div>
+            <button onclick="requestToModel()">Отправить запрос</button>
+            <div id="model-response"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentToken = null;
+
+        function showTab(tabName) {
+            // Скрываем все табы
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Убираем активный класс у всех кнопок
+            const tabButtons = document.querySelectorAll('.tab');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Показываем нужный таб
+            document.getElementById(tabName).classList.add('active');
+            
+            // Делаем кнопку активной
+            event.target.classList.add('active');
+        }
+
+        async function register() {
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-password').value;
+            
+            if (!username || !password) {
+                showResponse('register-response', 'Пожалуйста, заполните все поля', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8070/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('register-response', 'Регистрация успешна! Теперь вы можете войти в систему.', 'success');
+                    document.getElementById('reg-username').value = '';
+                    document.getElementById('reg-password').value = '';
+                } else {
+                    showResponse('register-response', `Ошибка: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showResponse('register-response', `Ошибка соединения: ${error.message}`, 'error');
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!username || !password) {
+                showResponse('login-response', 'Пожалуйста, заполните все поля', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8070/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentToken = data.token;
+                    showResponse('login-response', 'Вход выполнен успешно! Токен получен.', 'success');
+                    document.getElementById('login-username').value = '';
+                    document.getElementById('login-password').value = '';
+                } else {
+                    showResponse('login-response', `Ошибка: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showResponse('login-response', `Ошибка соединения: ${error.message}`, 'error');
+            }
+        }
+
+        async function requestToModel() {
+            if (!currentToken) {
+                showResponse('model-response', 'Сначала войдите в систему для получения токена!', 'error');
+                return;
+            }
+
+            const userRequest = document.getElementById('user-request').value;
+            
+            if (!userRequest) {
+                showResponse('model-response', 'Пожалуйста, введите ваш запрос', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:8070/request_to_model', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({ request: userRequest })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('model-response', `Ответ AI модели:\n\n${data}`, 'success');
+                } else {
+                    showResponse('model-response', `Ошибка: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showResponse('model-response', `Ошибка соединения: ${error.message}`, 'error');
+            }
+        }
+
+        function showResponse(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="response ${type}">${message}</div>`;
+        }
+    </script>
+</body>
+</html>
+
