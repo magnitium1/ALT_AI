@@ -237,12 +237,6 @@ function App() {
                         ThinkerAI
                     </span>
                 </div>
-                <nav>
-                    <a href="/about">ABOUT</a>
-                    <a href="/authors">AUTHORS</a>
-                    <a href="#">TECHNOLOGIES</a>
-                    <a href="/alt">CHAT</a>
-                </nav>
                 <button className="login" onClick={openRegForm}>LOGIN</button>
             </header>
             <main>
