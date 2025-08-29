@@ -1,6 +1,7 @@
 import "./App.css";
 import "./TeamAnimation.css";
 import img_logo from "./components/IMG/logo_img.jpeg";
+import teamPhoto from "./components/IMG/altai.jpg";
 import { useEffect, useRef, useState } from "react";
 
 function Authors() {
@@ -11,6 +12,7 @@ function Authors() {
     const [showLera, setShowLera] = useState(false);
     const [showArrow, setShowArrow] = useState(false);
     const [showBestTeam, setShowBestTeam] = useState(false);
+    const [showAuthorsList, setShowAuthorsList] = useState(false);
 
     const toMain = () => {
         location.href = "/";
@@ -198,6 +200,16 @@ function Authors() {
         };
     }, []);
 
+    const authors = [
+        { id: 1, name: "Василий", role: "Backend / Инфраструктура", photo: teamPhoto, description: "Проектирование API, база данных, деплой и CI/CD." },
+        { id: 2, name: "Роман", role: "Frontend / UI", photo: teamPhoto, description: "Интерфейс, анимации, интеграция с API и оптимизация UX." },
+        { id: 3, name: "Лера", role: "Product / ML", photo: teamPhoto, description: "Формирование требований, ML-интеграции и тестирование качества." }
+    ];
+
+    const onBestTeamClick = () => {
+        setShowAuthorsList(true);
+    };
+
     return (
         <>
             <canvas ref={canvasRef} className="mw-canvas"></canvas>
@@ -211,44 +223,58 @@ function Authors() {
                 <button className="main-btn" onClick={toMain}>MAIN</button>
             </header>
             <main>
-                <div className="team-animation-container">
-                    <div className="animation-wrapper">
-                        {/* Василий */}
-                        <div className={`name-block ${showVasily ? 'show' : ''}`}>
-                            <span>Василий</span>
-                        </div>
-
-                        {/* Первый плюсик */}
-                        <div className={`plus-sign ${showPlus1 ? 'show' : ''}`}>
-                            <span>+</span>
-                        </div>
-
-                        {/* Роман */}
-                        <div className={`name-block ${showRoman ? 'show' : ''}`}>
-                            <span>Роман</span>
-                        </div>
-
-                        {/* Второй плюсик */}
-                        <div className={`plus-sign ${showPlus2 ? 'show' : ''}`}>
-                            <span>+</span>
-                        </div>
-
-                        {/* Лера */}
-                        <div className={`name-block ${showLera ? 'show' : ''}`}>
-                            <span>Лера</span>
-                        </div>
-
-                        {/* Стрелочка вниз */}
-                        <div className={`arrow-down ${showArrow ? 'show' : ''}`}>
-                            <span>↓</span>
-                        </div>
-
-                        {/* Лучшая команда */}
-                        <div className={`name-block best-team ${showBestTeam ? 'show' : ''}`}>
-                            <span>Лучшая команда</span>
+                {!showAuthorsList && (
+                    <div className="team-animation-container">
+                        <div className="animation-wrapper">
+                            <div className={`name-block ${showVasily ? 'show' : ''}`}>
+                                <span>Василий</span>
+                            </div>
+                            <div className={`plus-sign ${showPlus1 ? 'show' : ''}`}>
+                                <span>+</span>
+                            </div>
+                            <div className={`name-block ${showRoman ? 'show' : ''}`}>
+                                <span>Роман</span>
+                            </div>
+                            <div className={`plus-sign ${showPlus2 ? 'show' : ''}`}>
+                                <span>+</span>
+                            </div>
+                            <div className={`name-block ${showLera ? 'show' : ''}`}>
+                                <span>Лера</span>
+                            </div>
+                            <div className={`arrow-down ${showArrow ? 'show' : ''}`}>
+                                <span>↓</span>
+                            </div>
+                            <div
+                                className={`name-block best-team ${showBestTeam ? 'show' : ''}`}
+                                onClick={onBestTeamClick}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') onBestTeamClick();
+                                }}
+                            >
+                                <span>Лучшая команда</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
+
+                {showAuthorsList && (
+                    <div className="authors-list">
+                        {authors.map((a) => (
+                            <div key={a.id} className="author-card">
+                                <div className="author-info header">
+                                    <div className="author-name">{a.name}</div>
+                                </div>
+                                <img className="author-photo" src={a.photo} alt={a.name} />
+                                <div className="author-info">
+                                    <div className="author-role">{a.role}</div>
+                                    <div className="author-desc">{a.description}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </main>
             <footer></footer>
         </>
