@@ -264,6 +264,21 @@
     border-radius: 20px;
 }
 
+/* Скрытие скроллбара во время печатания */
+.content.typing::-webkit-scrollbar {
+    width: 0px;
+}
+
+.content.typing {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Скрытие колесика загрузки во время генерации текста */
+.load.generating {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .logo2 {
         left: 5px;

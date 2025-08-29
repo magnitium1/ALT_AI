@@ -9,6 +9,8 @@ const App2 = () => {
     const [cnt1, setCnt1] = useState(false);
     const [cnt2, setCnt2] = useState(false);
     const [isBusy, setIsBusy] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
     const canvasRef = useRef(null);
     const textareaRef = useRef(null);
     const wrapperRef = useRef(null);
@@ -22,6 +24,15 @@ const App2 = () => {
         const wrapper = wrapperRef.current;
         const content = contentRef.current;
         if (!textarea) return;
+
+        // Устанавливаем состояние печатания
+        setIsTyping(true);
+        
+        // Сбрасываем таймер через 1 секунду после остановки печатания
+        clearTimeout(window.typingTimer);
+        window.typingTimer = setTimeout(() => {
+            setIsTyping(false);
+        }, 1000);
 
         const base = baseHeightRef.current || textarea.clientHeight;
         const line = lineHeightRef.current || 20;
@@ -96,6 +107,9 @@ const App2 = () => {
         const words = text.split(' ');
         let currentWordIndex = 0;
         
+        // Начинаем генерацию текста
+        setIsGenerating(true);
+        
         const typeNextWord = () => {
             if (currentWordIndex < words.length) {
                 if (currentWordIndex === 0) {
@@ -113,6 +127,8 @@ const App2 = () => {
                 
                 setTimeout(typeNextWord, speed);
             } else if (typeof onComplete === 'function') {
+                // Заканчиваем генерацию текста
+                setIsGenerating(false);
                 onComplete();
             }
         };
@@ -311,6 +327,18 @@ const App2 = () => {
         }
     }, []);
 
+    // Обновляем класс колесика загрузки при изменении состояния генерации
+    useEffect(() => {
+        const loadElements = document.querySelectorAll('.load');
+        loadElements.forEach(load => {
+            if (isGenerating) {
+                load.classList.add('generating');
+            } else {
+                load.classList.remove('generating');
+            }
+        });
+    }, [isGenerating]);
+
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -467,6 +495,7 @@ const App2 = () => {
             cancelAnimationFrame(raf);
             window.removeEventListener('resize', resize);
             document.removeEventListener('visibilitychange', onVisibility);
+            clearTimeout(window.typingTimer);
         };
     }, []);
 
@@ -493,7 +522,7 @@ const App2 = () => {
                     <button className="deeper_think" onClick={click3}>DeeperThink</button>
                     <button className="inside-button" onClick={click} disabled={isBusy}>→</button>
                 </div>
-                <div className="content" ref={contentRef}>
+                <div className={`content ${isTyping || isBusy ? 'typing' : ''}`} ref={contentRef}>
                 </div>
             </div>
         </>
