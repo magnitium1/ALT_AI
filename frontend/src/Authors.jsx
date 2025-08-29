@@ -1,50 +1,43 @@
-import { useEffect, useRef, useState } from "react";
 import "./App.css";
-import Warning from "./components/Warning";
-import Login from "./components/Login";
+import "./TeamAnimation.css";
 import img_logo from "./components/IMG/logo_img.jpeg";
+import { useEffect, useRef, useState } from "react";
 
-function App() {
-    const [warning, setWarning] = useState(true);
-    const [message, setMessage] = useState("");
-    const [regForm, setRegForm] = useState(false);
+function Authors() {
+    const [showVasily, setShowVasily] = useState(false);
+    const [showPlus1, setShowPlus1] = useState(false);
+    const [showRoman, setShowRoman] = useState(false);
+    const [showPlus2, setShowPlus2] = useState(false);
+    const [showLera, setShowLera] = useState(false);
+    const [showArrow, setShowArrow] = useState(false);
+    const [showBestTeam, setShowBestTeam] = useState(false);
 
-    const openRegForm = () => {
-        setRegForm(!regForm);
-    }
-
-    const toPay = () => {
-        location.href = '/alt_pay';
-    }
-
-    const openWarning = () => {
-        const trimmed = message.trim();
-        if (trimmed.length === 0) {
-            return;
-        }
-        document.cookie = `messege=${encodeURIComponent(trimmed)}; max-age=600; path=/`;
-        location.href = '/alt';
+    const toMain = () => {
+        location.href = "/";
     };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            openWarning();
-        }
-    };
-
-    const openSearchBar = () => {
-        setWarning(true);
-    };
-
-    let flag = "";
-    if (!warning) {
-        flag = "display_none";
-    }
 
     const canvasRef = useRef(null);
-    const bgRef = useRef(null);
-    const exclusionRectRef = useRef(null);
+
+    // Анимация команды
+    useEffect(() => {
+        const timer1 = setTimeout(() => setShowVasily(true), 1000);
+        const timer2 = setTimeout(() => setShowPlus1(true), 2000);
+        const timer3 = setTimeout(() => setShowRoman(true), 3000);
+        const timer4 = setTimeout(() => setShowPlus2(true), 4000);
+        const timer5 = setTimeout(() => setShowLera(true), 5000);
+        const timer6 = setTimeout(() => setShowArrow(true), 6000);
+        const timer7 = setTimeout(() => setShowBestTeam(true), 7000);
+
+        return () => {
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+            clearTimeout(timer3);
+            clearTimeout(timer4);
+            clearTimeout(timer5);
+            clearTimeout(timer6);
+            clearTimeout(timer7);
+        };
+    }, []);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -58,7 +51,7 @@ function App() {
         let raf = 0;
         let lastTime = performance.now();
         const minDistance = 16;
-        const repulsionStrength = 0.1;
+        const repulsionStrength = 0.1; 
 
         function buildStarSprite() {
             const size = 48;
@@ -78,12 +71,6 @@ function App() {
             return off;
         }
 
-        function updateExclusionRect() {
-            if (bgRef.current) {
-                exclusionRectRef.current = bgRef.current.getBoundingClientRect();
-            }
-        }
-
         function resize() {
             width = Math.floor(window.innerWidth);
             height = Math.floor(window.innerHeight);
@@ -94,7 +81,6 @@ function App() {
             ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
             if (!starSprite) starSprite = buildStarSprite();
             rebuildStars();
-            updateExclusionRect();
         }
 
         function random(min, max) { return Math.random() * (max - min) + min; }
@@ -171,9 +157,6 @@ function App() {
                 }
             }
 
-            const rect = exclusionRectRef.current;
-            const margin = 16;
-
             for (let i = 0; i < stars.length; i++) {
                 const s = stars[i];
                 s.x += s.vx * dt * 0.5;
@@ -183,16 +166,6 @@ function App() {
                 if (s.x > width + 10) s.x = -10;
                 if (s.y < -10) s.y = height + 10;
                 if (s.y > height + 10) s.y = -10;
-                if (rect) {
-                    if (
-                        s.x >= (rect.left - margin) &&
-                        s.x <= (rect.right + margin) &&
-                        s.y >= (rect.top - margin) &&
-                        s.y <= (rect.bottom + margin)
-                    ) {
-                        continue;
-                    }
-                }
 
                 const imgSize = 9 * s.size;
                 ctx.globalAlpha = s.alpha;
@@ -215,7 +188,6 @@ function App() {
         window.addEventListener('resize', resize);
         document.addEventListener('visibilitychange', onVisibility);
         resize();
-        updateExclusionRect();
         lastTime = performance.now();
         raf = requestAnimationFrame(frame);
 
@@ -229,7 +201,6 @@ function App() {
     return (
         <>
             <canvas ref={canvasRef} className="mw-canvas"></canvas>
-            <div className="background-text" ref={bgRef}>ALT</div>
             <header>
                 <div className="logo">
                     <span className="alt">
@@ -237,32 +208,46 @@ function App() {
                         ThinkerAI
                     </span>
                 </div>
-                <nav>
-                    <a href="/about">ABOUT</a>
-                    <a href="/authors">AUTHORS</a>
-                    <a href="#">TECHNOLOGIES</a>
-                    <a href="/alt">CHAT</a>
-                </nav>
-                <button className="login" onClick={openRegForm}>LOGIN</button>
+                <button className="main-btn" onClick={toMain}>MAIN</button>
             </header>
             <main>
-                <Warning display_none={warning} openSearchBar={openSearchBar} />
-                <Login regForm={regForm}/>
-                <div className={`search-bar ${flag}`}>
-                    <input
-                        type="text"
-                        placeholder="Ask ALT to come up with an idea"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                    />
-                    <button className="search-button" onClick={openWarning}>
-                        →
-                    </button>
-                </div>
-                <div className={`subscription-panel ${regForm ? 'display_none' : ''}`}>
-                    <div className="bg"></div>
-                    <button className="subscription-btn" onClick={toPay}>SUBSCRIPTION</button>
+                <div className="team-animation-container">
+                    <div className="animation-wrapper">
+                        {/* Василий */}
+                        <div className={`name-block ${showVasily ? 'show' : ''}`}>
+                            <span>Василий</span>
+                        </div>
+
+                        {/* Первый плюсик */}
+                        <div className={`plus-sign ${showPlus1 ? 'show' : ''}`}>
+                            <span>+</span>
+                        </div>
+
+                        {/* Роман */}
+                        <div className={`name-block ${showRoman ? 'show' : ''}`}>
+                            <span>Роман</span>
+                        </div>
+
+                        {/* Второй плюсик */}
+                        <div className={`plus-sign ${showPlus2 ? 'show' : ''}`}>
+                            <span>+</span>
+                        </div>
+
+                        {/* Лера */}
+                        <div className={`name-block ${showLera ? 'show' : ''}`}>
+                            <span>Лера</span>
+                        </div>
+
+                        {/* Стрелочка вниз */}
+                        <div className={`arrow-down ${showArrow ? 'show' : ''}`}>
+                            <span>↓</span>
+                        </div>
+
+                        {/* Лучшая команда */}
+                        <div className={`name-block best-team ${showBestTeam ? 'show' : ''}`}>
+                            <span>Лучшая команда</span>
+                        </div>
+                    </div>
                 </div>
             </main>
             <footer></footer>
@@ -270,4 +255,4 @@ function App() {
     );
 }
 
-export default App;
+export default Authors;

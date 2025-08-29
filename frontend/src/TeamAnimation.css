@@ -1,0 +1,151 @@
+.team-animation-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  font-family: 'Arial', sans-serif;
+  position: relative;
+  z-index: 10;
+}
+
+.animation-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Блоки с именами */
+.name-block {
+  background: white;
+  border-radius: 15px;
+  padding: 15px 30px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-50px) scale(0.8);
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.name-block::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.6s ease;
+}
+
+.name-block.show {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.name-block.show::before {
+  left: 100%;
+}
+
+.name-block span {
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Плюсики */
+.plus-sign {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  transform: scale(0) rotate(180deg);
+  opacity: 0;
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.plus-sign.show {
+  transform: scale(1) rotate(0deg);
+  opacity: 1;
+}
+
+/* Стрелочка вниз */
+.arrow-down {
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  transform: translateY(-20px) scale(0.5);
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  animation: bounce 2s infinite;
+}
+
+.arrow-down.show {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Специальный стиль для "Лучшая команда" */
+.best-team {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+  box-shadow: 0 12px 35px rgba(255, 107, 107, 0.4);
+}
+
+.best-team span {
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Дополнительные эффекты при наведении */
+.name-block:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.plus-sign:hover {
+  transform: scale(1.2);
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .name-block {
+    padding: 12px 25px;
+  }
+  
+  .name-block span {
+    font-size: 16px;
+  }
+  
+  .best-team span {
+    font-size: 18px;
+  }
+  
+  .plus-sign {
+    font-size: 20px;
+  }
+  
+  .arrow-down {
+    font-size: 24px;
+  }
+}

@@ -8,6 +8,7 @@ import App3 from './App3.jsx';
 import App4 from './App4.jsx';
 import App5 from './App5.jsx';
 import About from './About.jsx'
+import Authors from './Authors.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -15,6 +16,7 @@ createRoot(document.getElementById('root')).render(
             <Routes>
                 <Route path="/" element={<App />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/authors" element={<Authors />} />
                 <Route path="/alt" element={<App2 />} />
                 <Route path="/account" element={<App3 />} />
                 <Route path="/alt_pay" element={<App4 />} />
