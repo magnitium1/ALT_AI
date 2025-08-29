@@ -9,6 +9,10 @@
 pip install -r requirements.txt
 ```
 
+```bash
+pip install qwen-api
+```
+
 ### 2. Запуск бэкенда
 ```bash
 python main.py
