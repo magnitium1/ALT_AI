@@ -1,10 +1,18 @@
 import "./App3.css";
 import "./App.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import img_logo from "./components/IMG/logo_img.jpeg";
+import { useAuth } from "./auth/AuthContext";
+import { api } from "./api/client";
 
 const App3 = () => {
     
+    const { user } = useAuth();
+    const [msg, setMsg] = useState("");
+    const [search, setSearch] = useState("");
+    const [chats, setChats] = useState([]);
+    const [filtered, setFiltered] = useState([]);
+
     const toHome = () => {
         location.href = "/";
     }
@@ -17,9 +25,30 @@ const App3 = () => {
         location.href = "/alt";
     }
 
-    const logout = () => {
-        localStorage.clear();
-        sessionStorage.clear();
+    const createNewChat = async () => {
+        setMsg("");
+        try {
+            if (!user) {
+                setMsg("Войдите, чтобы создавать чаты");
+                return;
+            }
+            const { data } = await api.post('/chats', {});
+            if (data?.id) {
+                try { localStorage.setItem('current_chat_id', String(data.id)); } catch {}
+                location.href = `/alt`;
+            } else {
+                setMsg("Не удалось создать чат");
+            }
+        } catch (e) {
+            const status = e?.response?.status;
+            const text = e?.response?.data?.error || e?.message || 'Ошибка';
+            if (status === 401) setMsg('Сессия истекла. Войдите снова.');
+            else setMsg(`Ошибка создания чата: ${text}`);
+        }
+    }
+
+    const logout = async () => {
+        try { await api.post('/auth/logout'); } catch {}
         location.href = "/";
     }
 
@@ -184,6 +213,66 @@ const App3 = () => {
         };
     }, []);
 
+    useEffect(() => {
+        async function loadChats() {
+            try {
+                const { data } = await api.get('/chats');
+                const list = data?.chats || [];
+                setChats(list);
+                setFiltered((prev) => {
+                    // если есть активный поиск — перефильтровать по новому списку
+                    const q = (search || '').trim().toLowerCase();
+                    if (!q) return list;
+                    return list.filter(c => String(c.title || '').toLowerCase().includes(q) || String(c.id).includes(q));
+                });
+            } catch (e) {
+                // игнорируем, если не авторизованы
+            }
+        }
+        loadChats();
+        // авто-обновление на короткое время, чтобы подтянуть первый заголовок
+        const t1 = setInterval(loadChats, 2000);
+        // и при фокусе окна
+        const onFocus = () => loadChats();
+        window.addEventListener('focus', onFocus);
+        return () => {
+            clearInterval(t1);
+            window.removeEventListener('focus', onFocus);
+        };
+    }, []);
+
+    useEffect(() => {
+        const q = (search || '').trim().toLowerCase();
+        if (!q) { setFiltered(chats); return; }
+        setFiltered(
+            chats.filter(c =>
+                String(c.title || '').toLowerCase().includes(q) ||
+                String(c.id).includes(q)
+            )
+        );
+    }, [search, chats]);
+
+    const openChat = (id) => {
+        location.href = `/chat/${id}`;
+    }
+
+    const deleteChat = async (id) => {
+        setMsg("");
+        try {
+            await api.delete(`/chats/${id}`);
+            const next = chats.filter(c => c.id !== id);
+            setChats(next);
+            // Поддерживаем фильтрованное отображение
+            const q = (search || '').trim().toLowerCase();
+            setFiltered(
+                q ? next.filter(c => String(c.title || '').toLowerCase().includes(q) || String(c.id).includes(q)) : next
+            );
+            setMsg("");
+        } catch (e) {
+            setMsg('Не удалось удалить чат');
+        }
+    }
+
     return (
         <>
             <canvas ref={canvasRef} style={{position:"fixed", inset:0, width:"100vw", height:"100vh", zIndex:0, display:"block"}}></canvas>
@@ -195,24 +284,48 @@ const App3 = () => {
                     </span>
                 </div>
                 <button className="accaunt" onClick={toChat}>CHAT</button>
-                <div className="chats-history">
+                <div className="chats-history" style={{display:"flex", flexDirection:"column", gap:12}}>
                     <h2 className="chats-history-title">CHATS</h2>
                     <input
                         className="chat-search"
                         type="text"
                         placeholder="Search"
+                        value={search}
+                        onChange={(e)=>setSearch(e.target.value)}
+                        style={{position:'relative', margin:0, display:'block', zIndex:2, marginBottom:12}}
                     />
+                    <div style={{flex:1, overflowY:'auto', display:'flex', flexDirection:'column', gap:6, position:'relative', zIndex:1, paddingTop:6, marginTop:34}}>
+                        {filtered.map((c) => (
+                            <div key={c.id} style={{display:'flex', gap:8, alignItems:'center', width:'100%'}}>
+                                <button className="subscription-button" onClick={()=>openChat(c.id)} style={{textAlign:'left', flex:1}}>
+                                    {c.title || `Chat #${c.id}`}
+                                </button>
+                                <button
+                                    className="subscription-button delete"
+                                    title="Delete chat"
+                                    aria-label="Delete chat"
+                                    onClick={()=>deleteChat(c.id)}
+                                    style={{minWidth:36, marginLeft:'auto', padding:'8px 12px'}}
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        ))}
+                        {filtered.length === 0 && <div style={{opacity:0.8}}>No chats</div>}
+                    </div>
+                    {msg && <div className="info-text" style={{marginTop:8}}>{msg}</div>}
+                    <button className="subscription-button" style={{marginTop:12}} onClick={createNewChat}>NEW CHAT</button>
                 </div>
                 <div className="statistics">
                     <h2 className="information">INFORMATION</h2>
                     <div className="content2">
                         <div className="nickname-container">
                             <h2 className="NickName">NickName:</h2>
-                            <h2 className="nick">Vasiliy</h2>
+                            <h2 className="nick">{user?.username || "—"}</h2>
                         </div>
                         <div className="email-container">
                             <h2 className="EmailLabel">Email:</h2>
-                            <h2 className="email">vasiliy@example.com</h2>
+                            <h2 className="email">{user?.email || "—"}</h2>
                         </div>
                         <div className="subscription-block">
                             <button className="subscription-button" onClick={toALT_PAY}>SUBSCRIPTION</button>

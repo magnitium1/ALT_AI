@@ -1,6 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AuthProvider } from './auth/AuthContext.jsx'
+import ChatPage from './ChatPage.jsx'
 import './index.css'
 import App from './App.jsx'
 import App2 from './App2.jsx'
@@ -12,16 +14,19 @@ import Authors from './Authors.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<App />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/authors" element={<Authors />} />
-                <Route path="/alt" element={<App2 />} />
-                <Route path="/account" element={<App3 />} />
-                <Route path="/alt_pay" element={<App4 />} />
-                <Route path="/edit" element={<App5 />} />
-            </Routes>
-        </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/authors" element={<Authors />} />
+          <Route path="/alt" element={<App2 />} />
+          <Route path="/account" element={<App3 />} />
+          <Route path="/alt_pay" element={<App4 />} />
+          <Route path="/edit" element={<App5 />} />
+          <Route path="/chat/:id" element={<ChatPage />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   </StrictMode>,
 )

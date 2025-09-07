@@ -1,7 +1,12 @@
 from qwen_api import Qwen
 from qwen_api.core.types.chat import ChatMessage
 from dotenv import load_dotenv
-load_dotenv()
+from pathlib import Path
+
+# Пытаемся загрузить .env из AltAI и из корня репозитория
+_here = Path(__file__).resolve().parent
+load_dotenv(_here / ".env")
+load_dotenv((_here.parent) / ".env")
 
 
 def use_model(user_promt: str) -> str:

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import "./App2.css";
 import img_logo from "./components/IMG/logo_img.jpeg"
-import axios from "axios";
+import { api } from "./api/client";
 import { useEffect, useRef } from "react";
+import { useAuth } from "./auth/AuthContext";
 
 const App2 = () => {
 
@@ -18,6 +19,7 @@ const App2 = () => {
     const baseHeightRef = useRef(0);
     const lineHeightRef = useRef(0);
     const contentBaseHeightRef = useRef(0);
+    const { user, loading } = useAuth();
 
     const handleAutoGrow = () => {
         const textarea = textareaRef.current;
@@ -142,7 +144,7 @@ const App2 = () => {
                 return;
             } else {
                 e.preventDefault();
-                if (!isBusy) {
+                if (!isBusy && !loading && user) {
                     click();
                 }
             }
@@ -177,6 +179,16 @@ const App2 = () => {
         const textarea = document.querySelector(".text-area");
         const content = document.querySelector(".content");
         
+        if (!user) {
+            const content = document.querySelector(".content");
+            const warn = document.createElement('div');
+            warn.className = 'answer error';
+            warn.textContent = 'Вы не авторизованы. Войдите через LOGIN и попробуйте снова.';
+            content.appendChild(warn);
+            content.scrollTo({ top: content.scrollHeight, behavior: 'smooth' });
+            return;
+        }
+
         if (!textarea.value.trim()) {
             return;
         }
@@ -210,27 +222,25 @@ const App2 = () => {
             behavior: 'smooth'
         });
         
-        const token = localStorage.getItem('jwt_token') || '';
-        if (!token) {
-            if (load && load.parentNode) {
-                load.remove();
+        // Обеспечиваем наличие chat_id: создаём чат при первом сообщении
+        let chatId = null;
+        try { chatId = localStorage.getItem('current_chat_id'); } catch {}
+        const ensureChat = async () => {
+            if (chatId) return Number(chatId);
+            const { data } = await api.post('/chats', {});
+            const newId = data?.id;
+            if (newId) {
+                try { localStorage.setItem('current_chat_id', String(newId)); } catch {}
+                return newId;
             }
-            const warn = document.createElement('div');
-            warn.className = 'answer error';
-            warn.textContent = 'Вы не авторизованы. Войдите через LOGIN (получите токен) и попробуйте снова.';
-            content.appendChild(warn);
-            content.scrollTo({ top: content.scrollHeight, behavior: 'smooth' });
-            setIsBusy(false);
-            console.error('JWT token is missing. Please log in.');
-            return;
-        }
+            throw new Error('Не удалось создать чат');
+        };
 
-        axios
-            .post(
-                'http://127.0.0.1:8070/request_to_model',
-                { request: cnt },
-                { headers: { Authorization: `Bearer ${token}` } }
-            )
+        ensureChat()
+            .then((cid) => api.post(
+                '/request_to_model',
+                { request: cnt, chat_id: Number(cid) }
+            ))
             .then((response) => {
                 const answer = document.createElement("p");
                 answer.className = "answer";
@@ -253,15 +263,6 @@ const App2 = () => {
                         }
                     });
 
-                    const editBtn = document.createElement('button');
-                    editBtn.className = 'action-button edit-button';
-                    editBtn.textContent = 'Edit';
-                    editBtn.addEventListener('click', () => {
-                        document.cookie = `editText=${encodeURIComponent(answer.innerText || '')}; max-age=600; path=/`;
-                        location.href = '/edit';
-                    });
-
-                    actions.appendChild(editBtn);
                     actions.appendChild(copyBtn);
                     content.appendChild(actions);
 
@@ -513,14 +514,15 @@ const App2 = () => {
                 <div className="textarea-wrapper" ref={wrapperRef}>
                     <textarea
                         className="text-area"
-                        placeholder="Ask ALT to come up with an idea"
+                        placeholder={(!loading && !user) ? "Login to chat first" : "Ask ALT to come up with an idea"}
                         onKeyDown={handleKeyDown}
                         onInput={handleAutoGrow}
                         ref={textareaRef}
+                        disabled={loading || !user}
                     />
                     <button className="deep_think" onClick={click2}>DeepThink</button>
                     <button className="deeper_think" onClick={click3}>DeeperThink</button>
-                    <button className="inside-button" onClick={click} disabled={isBusy}>→</button>
+                    <button className="inside-button" onClick={click} disabled={isBusy || loading || !user}>→</button>
                 </div>
                 <div className={`content ${isTyping || isBusy ? 'typing' : ''}`} ref={contentRef}>
                 </div>

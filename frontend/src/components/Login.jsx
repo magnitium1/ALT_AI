@@ -1,10 +1,11 @@
 import { useState } from "react";
-import axios from "axios";
+import { api } from "../api/client";
+import { useAuth } from "../auth/AuthContext";
 import "./UI-UX/Login.model.css";
 
-const API_BASE = "http://127.0.0.1:8070";
 
 const Login = ({ regForm }) => {
+    const { reload } = useAuth();
     const [flag, setFlag] = useState(true);
     const [loginName, setLoginName] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
@@ -41,9 +42,10 @@ const Login = ({ regForm }) => {
                 setErrorText("Введите логин и пароль");
                 return;
             }
-            await axios.post(`${API_BASE}/register`, {
+            await api.post(`/register`, {
                 username: regName,
                 password: regPassword,
+                email: regEmail || undefined,
             });
             setInfoText("Регистрация успешна. Теперь войдите.");
             setFlag(true);
@@ -61,16 +63,15 @@ const Login = ({ regForm }) => {
                 setErrorText("Введите логин и пароль");
                 return;
             }
-            const resp = await axios.post(`${API_BASE}/login`, {
+            const resp = await api.post(`/login`, {
                 username: loginName,
                 password: loginPassword,
             });
-            const token = resp?.data?.token;
-            if (token) {
-                localStorage.setItem("jwt_token", token);
+            if (resp?.data?.ok) {
                 setInfoText("Вход выполнен");
+                await reload();
             } else {
-                setErrorText("Токен не получен");
+                setErrorText("Вход не подтверждён сервером");
             }
         } catch (e) {
             const msg = e?.response?.data?.error || "Ошибка входа";
