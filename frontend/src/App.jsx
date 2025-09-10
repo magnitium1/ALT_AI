@@ -3,11 +3,13 @@ import "./App.css";
 import Warning from "./components/Warning";
 import Login from "./components/Login";
 import img_logo from "./components/IMG/logo_img.jpeg";
+import { useAuth } from "./auth/AuthContext";
 
 function App() {
     const [warning, setWarning] = useState(true);
     const [message, setMessage] = useState("");
     const [regForm, setRegForm] = useState(false);
+    const { user, loading } = useAuth();
 
     const openRegForm = () => {
         setRegForm(!regForm);

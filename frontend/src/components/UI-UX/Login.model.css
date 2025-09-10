@@ -70,6 +70,23 @@
     color: white;
 }
 
+.error-text {
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    top: 12%;
+    color: #ff6b6b;
+}
+
+.info-text,
+.success-text {
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    top: 18%;
+    color: #ffffff; /* белая надпись */
+}
+
 .one {
     top: 83%;
 }

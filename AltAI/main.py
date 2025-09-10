@@ -76,6 +76,27 @@ def init_db():
             )
             """
         )
+        # Ограничения по количеству запросов и использование
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS user_limits (
+                username TEXT PRIMARY KEY,
+                daily_limit INTEGER NOT NULL DEFAULT 10,
+                unlimited INTEGER NOT NULL DEFAULT 0
+            )
+            """
+        )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS user_usage (
+                username TEXT NOT NULL,
+                day TEXT NOT NULL,
+                used INTEGER NOT NULL DEFAULT 0,
+                bonus INTEGER NOT NULL DEFAULT 0,
+                PRIMARY KEY(username, day)
+            )
+            """
+        )
         conn.commit()
     finally:
         conn.close()
@@ -211,8 +232,34 @@ def request_to_model():
         chat_id = data.get("chat_id")
         if not user_text:
             return jsonify({"error": "request is required"}), 400
-        # Сначала сохраняем пользовательское сообщение и заголовок чата (если пуст)
+        # Проверяем лимиты пользователя
         username = get_current_username()
+        if username:
+            utc_day = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+            conn = get_db_connection()
+            try:
+                # Получаем лимиты
+                cur = conn.execute("SELECT daily_limit, unlimited FROM user_limits WHERE username = ?", (username,))
+                row = cur.fetchone()
+                daily_limit = int(row["daily_limit"]) if row else 10
+                unlimited = int(row["unlimited"]) if row else 0
+                # Получаем использование
+                cur = conn.execute("SELECT used, bonus FROM user_usage WHERE username = ? AND day = ?", (username, utc_day))
+                urow = cur.fetchone()
+                used = int(urow["used"]) if urow else 0
+                bonus = int(urow["bonus"]) if urow else 0
+                effective_limit = float("inf") if unlimited else (daily_limit + bonus)
+                if used >= effective_limit:
+                    return jsonify({"error": "Daily message limit reached"}), 429
+                # Регистрируем использование +1
+                if urow:
+                    conn.execute("UPDATE user_usage SET used = used + 1 WHERE username = ? AND day = ?", (username, utc_day))
+                else:
+                    conn.execute("INSERT INTO user_usage(username, day, used, bonus) VALUES(?, ?, ?, ?)", (username, utc_day, 1, 0))
+                conn.commit()
+            finally:
+                conn.close()
+        # Сначала сохраняем пользовательское сообщение и заголовок чата (если пуст)
         saved_message = False
         if username and chat_id:
             try:
@@ -267,6 +314,51 @@ def request_to_model():
         return jsonify({"error": str(exc)}), 500
 
 
+@app.route("/auth/apply_promo", methods=["POST", "OPTIONS"])
+def auth_apply_promo():
+    if request.method == "OPTIONS":
+        return "", 204
+    username = get_current_username()
+    if not username:
+        return jsonify({"error": "unauthorized"}), 401
+    data = request.get_json(silent=True) or request.form.to_dict() or {}
+    code = (data.get("code") or "").strip().lower()
+    if not code:
+        return jsonify({"error": "code is required"}), 400
+    conn = get_db_connection()
+    try:
+        if code == "test_pro":
+            # 20 запросов в день
+            conn.execute(
+                "INSERT INTO user_limits(username, daily_limit, unlimited) VALUES(?, 20, 0)\n                 ON CONFLICT(username) DO UPDATE SET daily_limit = 20, unlimited = 0",
+                (username,)
+            )
+            conn.commit()
+            return jsonify({"ok": True, "message": "Daily limit set to 20"}), 200
+        elif code == "test_max":
+            # бесконечные запросы
+            conn.execute(
+                "INSERT INTO user_limits(username, daily_limit, unlimited) VALUES(?, 10, 1)\n                 ON CONFLICT(username) DO UPDATE SET unlimited = 1",
+                (username,)
+            )
+            conn.commit()
+            return jsonify({"ok": True, "message": "Unlimited requests enabled"}), 200
+        elif code == "test_additionally":
+            # +3 запроса только на сегодня
+            utc_day = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+            cur = conn.execute("SELECT bonus FROM user_usage WHERE username = ? AND day = ?", (username, utc_day))
+            if cur.fetchone():
+                conn.execute("UPDATE user_usage SET bonus = bonus + 3 WHERE username = ? AND day = ?", (username, utc_day))
+            else:
+                conn.execute("INSERT INTO user_usage(username, day, used, bonus) VALUES(?, ?, 0, 3)", (username, utc_day))
+            conn.commit()
+            return jsonify({"ok": True, "message": "+3 requests for today"}), 200
+        else:
+            return jsonify({"error": "invalid code"}), 400
+    finally:
+        conn.close()
+
+
 @app.route("/auth/me", methods=["GET"]) 
 def auth_me():
     token = request.cookies.get("access_token")
@@ -314,6 +406,51 @@ def auth_logout():
     resp = jsonify({"ok": True})
     clear_session_cookies(resp)
     return resp, 200
+
+
+@app.route("/auth/update_username", methods=["POST", "OPTIONS"]) 
+def auth_update_username():
+    if request.method == "OPTIONS":
+        return "", 204
+    # Требуется авторизация
+    current = get_current_username()
+    if not current:
+        return jsonify({"error": "unauthorized"}), 401
+    # Поддерживаем как JSON, так и form-urlencoded
+    data = request.get_json(silent=True)
+    if not data:
+        data = request.form.to_dict() if request.form else {}
+    new_username = (data.get("username") or "").strip()
+    if not new_username:
+        return jsonify({"error": "username is required"}), 400
+    # Проверяем уникальность
+    conn = get_db_connection()
+    try:
+        # Если имя не меняется — вернуть OK
+        if new_username == current:
+            resp = jsonify({"ok": True, "username": new_username})
+            set_session_cookies(resp, new_username)
+            return resp, 200
+        cur = conn.execute("SELECT 1 FROM users WHERE username = ?", (new_username,))
+        if cur.fetchone():
+            return jsonify({"error": "username already exists"}), 409
+        # Обновляем имя пользователя в users
+        conn.execute("UPDATE users SET username = ? WHERE username = ?", (new_username, current))
+        # Переноcим чаты владельца
+        conn.execute("UPDATE chats SET username = ? WHERE username = ?", (new_username, current))
+        conn.commit()
+        # Обновляем куки сессии
+        resp = jsonify({"ok": True, "username": new_username})
+        set_session_cookies(resp, new_username)
+        return resp, 200
+    except Exception as e:
+        try:
+            conn.rollback()
+        except Exception:
+            pass
+        return jsonify({"error": f"update failed: {str(e)}"}), 500
+    finally:
+        conn.close()
 
 
 # ------- Чаты и сообщения -------
@@ -430,6 +567,9 @@ def delete_chat(chat_id: int):
         return jsonify({"ok": True}), 200
     finally:
         conn.close()
+
+
+# Удаляем редирект, чтобы избежать циклов. Фронтенд роутер сам обработает /authors.
 
 
 def main():

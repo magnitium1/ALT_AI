@@ -21,6 +21,23 @@ const App2 = () => {
     const contentBaseHeightRef = useRef(0);
     const { user, loading } = useAuth();
 
+    // Автосоздание чата при входе на ALT, если его нет
+    useEffect(() => {
+        async function ensureChatOnEnter() {
+            try {
+                if (!user || loading) return;
+                // Всегда создаем новый чат при входе на ALT
+                const { data } = await api.post('/chats', {});
+                if (data?.id) {
+                    localStorage.setItem('current_chat_id', String(data.id));
+                }
+            } catch (e) {
+                // игнорируем
+            }
+        }
+        ensureChatOnEnter();
+    }, [user, loading]);
+
     const handleAutoGrow = () => {
         const textarea = textareaRef.current;
         const wrapper = wrapperRef.current;
@@ -226,7 +243,15 @@ const App2 = () => {
         let chatId = null;
         try { chatId = localStorage.getItem('current_chat_id'); } catch {}
         const ensureChat = async () => {
-            if (chatId) return Number(chatId);
+            // если есть id — проверим, что чат существует и наш
+            if (chatId) {
+                try {
+                    await api.get(`/chats/${Number(chatId)}`);
+                    return Number(chatId);
+                } catch (e) {
+                    // не найден — создаём новый
+                }
+            }
             const { data } = await api.post('/chats', {});
             const newId = data?.id;
             if (newId) {
@@ -282,8 +307,12 @@ const App2 = () => {
                 const err = document.createElement('div');
                 err.className = 'answer error';
                 const status = error?.response?.status;
-                const msg = error?.response?.data?.error || error?.message || 'Неизвестная ошибка';
-                err.textContent = `Ошибка запроса${status ? ` (${status})` : ''}: ${msg}`;
+                if (status === 429) {
+                    err.textContent = 'Daily message limit reached';
+                } else {
+                    const msg = error?.response?.data?.error || error?.message || 'Неизвестная ошибка';
+                    err.textContent = `Ошибка запроса${status ? ` (${status})` : ''}: ${msg}`;
+                }
                 content.appendChild(err);
                 content.scrollTo({ top: content.scrollHeight, behavior: 'smooth' });
                 setIsBusy(false);

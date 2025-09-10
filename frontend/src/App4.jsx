@@ -2,9 +2,13 @@ import "./App4.css";
 import "./App.css";
 import { useEffect, useRef, useState } from "react";
 import img_logo from "./components/IMG/logo_img.jpeg";
+import { api } from "./api/client";
 
 const App4 = () => {
     const [additionalQty, setAdditionalQty] = useState(1);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [promo, setPromo] = useState("");
+    const [promoMsg, setPromoMsg] = useState("");
     const canvasRef = useRef(null);
 
     const incrementAdditionalQty = () => {
@@ -29,6 +33,23 @@ const App4 = () => {
 
     const toAccount = () => {
         location.href = "/account";
+    }
+    const openBuy = () => {
+        setPromo("");
+        setPromoMsg("payment is temporarily unavailable");
+        setIsModalOpen(true);
+    }
+    const applyPromo = async () => {
+        setPromoMsg("");
+        try {
+            const code = (promo || "").trim();
+            if (!code) { setPromoMsg("enter promo code"); return; }
+            const { data } = await api.post('/auth/apply_promo', { code });
+            setPromoMsg(data?.message || "applied");
+        } catch (e) {
+            const msg = e?.response?.data?.error || e?.message || 'error';
+            setPromoMsg(String(msg));
+        }
     }
 
     useEffect(() => {
@@ -211,13 +232,13 @@ const App4 = () => {
                                 <div className="plan-title">PRO</div>
                                 <div className="plan-price">100 RUB</div>
                                 <div className="plan-desc">unlimited DeepThink<br/>20 requests to DeeperThink</div>
-                                <button className="buy-button">Buy</button>
+                                <button className="buy-button" onClick={openBuy}>Buy</button>
                             </div>
                             <div className="plan-card">
                                 <div className="plan-title">MAX</div>
                                 <div className="plan-price">250 RUB</div>
                                 <div className="plan-desc">Everything in PRO, unlimited DeeperThink</div>
-                                <button className="buy-button">Buy</button>
+                                <button className="buy-button" onClick={openBuy}>Buy</button>
                             </div>
                             <div className="plan-card">
                                 <div className="plan-title">Additionally</div>
@@ -234,12 +255,26 @@ const App4 = () => {
                                     <button className="qty-btn" onClick={incrementAdditionalQty}>+</button>
                                 </div>
                                 <div className="plan-total">Total: {additionalQty * 10} RUB</div>
-                                <button className="buy-button">Buy</button>
+                                <button className="buy-button" onClick={openBuy}>Buy</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {isModalOpen && (
+                <div className="modal-overlay" onClick={()=>setIsModalOpen(false)}>
+                    <div className="modal" onClick={(e)=>e.stopPropagation()}>
+                        <div className="modal-title">Payment</div>
+                        <div className="modal-note">payment is temporarily unavailable</div>
+                        <div className="modal-row">
+                            <input className="promo-input" placeholder="Enter promo code" value={promo} onChange={(e)=>setPromo(e.target.value)} />
+                            <button className="apply-button" onClick={applyPromo}>Apply</button>
+                        </div>
+                        {promoMsg && <div className="promo-msg">{promoMsg}</div>}
+                        <button className="close-button" onClick={()=>setIsModalOpen(false)}>Close</button>
+                    </div>
+                </div>
+            )}
         </>
     );
 }

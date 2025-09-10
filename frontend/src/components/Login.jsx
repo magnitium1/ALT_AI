@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import "./UI-UX/Login.model.css";
@@ -14,6 +14,16 @@ const Login = ({ regForm }) => {
     const [regEmail, setRegEmail] = useState("");
     const [errorText, setErrorText] = useState("");
     const [infoText, setInfoText] = useState("");
+    // Показываем постоянное сообщение об успешном входе, если оно было ранее
+    useEffect(() => {
+        try {
+            const ok = localStorage.getItem('login_success');
+            if (ok === '1') {
+                setInfoText('LOGIN SUCCESSFUL');
+            }
+        } catch {}
+    }, []);
+
 
     const reverse1 = () => {
         setFlag(false);
@@ -57,7 +67,6 @@ const Login = ({ regForm }) => {
 
     const handleLogin = async () => {
         setErrorText("");
-        setInfoText("");
         try {
             if (!loginName || !loginPassword) {
                 setErrorText("Введите логин и пароль");
@@ -68,7 +77,8 @@ const Login = ({ regForm }) => {
                 password: loginPassword,
             });
             if (resp?.data?.ok) {
-                setInfoText("Вход выполнен");
+                setInfoText("LOGIN SUCCESSFUL");
+                try { localStorage.setItem('login_success', '1'); } catch {}
                 await reload();
             } else {
                 setErrorText("Вход не подтверждён сервером");
@@ -83,7 +93,7 @@ const Login = ({ regForm }) => {
         <div className={`Login ${o_c}`}>
             <h2 className="text-content">Knowledge is power</h2>
             {errorText && <div className="error-text">{errorText}</div>}
-            {infoText && <div className="info-text">{infoText}</div>}
+            {infoText && <div className="info-text success-text">{infoText}</div>}
             <div className={`div-input1 ${d_n1}`}>
                 <input className="input class1" placeholder="Nickname" value={loginName} onChange={(e) => setLoginName(e.target.value)} />
                 <input className="input class2" type="password" placeholder="Password" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} />

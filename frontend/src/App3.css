@@ -115,6 +115,8 @@
     border-radius: 15px;
     background-color: #1a1a1a;
     padding-bottom: 64px;
+    display: flex;
+    flex-direction: column;
 }
 
 .information {
@@ -202,6 +204,10 @@
     font-size: 16px;
     cursor: pointer;
 }
+.subscription-button .icon, .subscription-button svg {
+    color: #1a1a1a;
+    fill: #1a1a1a;
+}
 .subscription-button.delete {
     background-color: #dc3545;
     color: #ffffff;
@@ -229,27 +235,48 @@
     bottom: 15px;
     left: 15px;
     transition: background-color 0.3s ease;
-
     user-select: none;
 }
+.home-button {
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    bottom: 15px;
+    left: 150px;
+}
+
 
 .logout-button:hover {
     background-color: #c82333;
 }
 
 .edit-link {
-    position: absolute;
-    bottom: 22px;
-    right: 20px;
-    color: #999999;
-    text-decoration: none;
-    font-size: 20px;
-    user-select: none;
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
     cursor: pointer;
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    transition: background-color 0.3s ease;
+    user-select: none;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .edit-link:hover {
-    text-decoration: underline;
+    background-color: #e6e6e6;
+    text-decoration: none;
 }
 
 .logout-button:active {
@@ -464,6 +491,34 @@
         transform: none;
         margin: 0;
         display: inline-block;
+        width: auto;
+        max-width: none;
+    }
+    
+    .home-button {
+        font-size: 16px;
+        padding: 8px 16px;
+        position: absolute;
+        bottom: 10px;
+        left: 120px;
+        transform: none;
+        margin: 0;
+        display: inline-block;
+        width: auto;
+        max-width: none;
+    }
+    
+    .edit-link {
+        font-size: 16px;
+        padding: 8px 16px;
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        transform: none;
+        margin: 0;
+        display: inline-block;
+        width: auto;
+        max-width: none;
     }
     .subscription-block {
         margin-left: 10px;
@@ -554,11 +609,39 @@
         font-size: 14px;
         padding: 6px 12px;
         bottom: 8px;
-        position: relative;
+        position: absolute;
         left: 5px;
         transform: none;
-        margin: 12px 0 0;
+        margin: 0;
         display: inline-block;
+        width: auto;
+        max-width: none;
+    }
+    
+    .home-button {
+        font-size: 14px;
+        padding: 6px 12px;
+        bottom: 8px;
+        position: absolute;
+        left: 100px;
+        transform: none;
+        margin: 0;
+        display: inline-block;
+        width: auto;
+        max-width: none;
+    }
+    
+    .edit-link {
+        font-size: 14px;
+        padding: 6px 12px;
+        bottom: 8px;
+        position: absolute;
+        right: 5px;
+        transform: none;
+        margin: 0;
+        display: inline-block;
+        width: auto;
+        max-width: none;
     }
     .subscription-block {
         margin-left: 5px;

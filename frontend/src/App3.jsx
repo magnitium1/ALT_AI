@@ -331,7 +331,8 @@ const App3 = () => {
                             <button className="subscription-button" onClick={toALT_PAY}>SUBSCRIPTION</button>
                         </div>
                     </div>
-                    <a className="edit-link" href="#">Edit</a>
+                    <a className="edit-link" onClick={(e)=>{e.preventDefault(); const val = prompt('Enter new username', user?.username || ''); if (val && val.trim()) { const body = new URLSearchParams({ username: val.trim() }); api.post('/auth/update_username', body, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then(()=>location.reload()).catch(err=>alert(err?.response?.data?.error || 'Update failed')); } }}>Edit</a>
+                    <button className="home-button" onClick={toHome}>Home</button>
                     <button className="logout-button" onClick={logout}>Exit</button>
                 </div>
             </div>
